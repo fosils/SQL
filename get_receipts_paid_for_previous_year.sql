@@ -36,6 +36,3 @@ select
 return ret;
 end;
 $function$;
-
-select * from get_receipts_paid_for_previous_year(114406);
-select * from get_receipts_paid_for_previous_year(114408);
