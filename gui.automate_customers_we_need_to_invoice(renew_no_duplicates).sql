@@ -52,7 +52,7 @@ begin
     _service_until = (_service_from + interval '1 year'- interval '1 day');
     
     if (_price_for_extra_receipts_previous_year>0) and 
-    	(not EXISTS (SELECT * FROM customer_payments  WHERE customer_id = _customer_id and  service_from = _service_until_previous and service_until=_service_until_previous and package='Extra receipts')) then
+    	(not EXISTS (SELECT * FROM customer_payments  WHERE customer_id = _customer_id and  service_from = _service_from_previous and service_until=_service_until_previous and package='Extra receipts')) then
         insert into customer_payments(customer_id, service_from, service_until,package,receipts_paid_for , price,payment_freqency) 
             values (_customer_id , 
                 _service_from_previous,
