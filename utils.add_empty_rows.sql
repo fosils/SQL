@@ -7,7 +7,9 @@ _str text;
 _str2 text;
 _count integer;
 BEGIN
-_str=$$select 'select count(*) from $$ || table_name || $$ where ' ||string_agg('('||column_name||' is null)' , ' and ') from information_schema.columns where table_name ='$$||table_name||$$' and column_default is null$$;
+_str=$$select 'select count(*) from $$ || table_name || $$ where ' ||string_agg('("'||column_name||'" is null)' , ' and ') 
+	from information_schema.columns 
+	where table_name ='$$||table_name||$$' and column_default is null$$;
 --raise notice 'Value: %', _str;
 execute (_str ) into _str2;
 --raise notice 'Value2: %', _str2;
@@ -18,4 +20,4 @@ if _count < number_of_rows then
 	execute (select string_agg('insert into '||table_name||' default values',';') from generate_series(1,number_of_rows - _count));
 end if;
 END;
-$function$
+$function$;
