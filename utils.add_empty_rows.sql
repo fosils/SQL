@@ -21,3 +21,9 @@ if _count < number_of_rows then
 end if;
 END;
 $function$;
+
+
+select add_empty_rows('customers')
+
+insert into customers default values
+
