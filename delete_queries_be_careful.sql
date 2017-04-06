@@ -15,6 +15,8 @@ CREATE OR REPLACE rule edit_delete_queries_be_careful AS
 on update to gui.delete_queries_be_careful
 do instead
 select 
+case when (get_current_user()='' or get_current_user() = '') then
 	CASE 
 		WHEN new.delete_query=true THEN (SELECT pg_cancel_backend(new.pid))
-	end;
+	end
+end;
