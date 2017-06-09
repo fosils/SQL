@@ -1,3 +1,8 @@
+insert into task_manager.task_parameters (task_type_id,parameter_name,data_type) values(501,'tablename','text');
+insert into task_manager.task_parameters (task_type_id,parameter_name,data_type) values(501,'column_names','text');
+insert into task_manager.task_parameters (task_type_id,parameter_name,data_type) values(501,'column_values','text');
+insert into task_bots.bots ("name", "type","path",task_type_id)values ('insert_bot',1,'task_bots.insert_bot',501)
+--update task_bots.bots set task_type_id = 501 where id = 1;
 --drop FUNCTION task_bots.insert_bot(tablename text, columns text, column_values text);
 CREATE OR REPLACE FUNCTION task_bots.insert_bot(task_id int)
  RETURNS boolean

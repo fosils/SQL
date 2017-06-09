@@ -1,5 +1,6 @@
+--drop function cron.every_minute()
 CREATE OR REPLACE FUNCTION cron.every_minute()
- RETURNS trigger
+ RETURNS void
  LANGUAGE plpgsql
 AS $function$
 begin

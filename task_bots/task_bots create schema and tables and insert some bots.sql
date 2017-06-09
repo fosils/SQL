@@ -11,8 +11,9 @@ CREATE TABLE task_bots.bots (
 );
 
 
-create table task_bots.logs(id serial, botname text, date timestamp DEFAULT now(), action text, result text,CONSTRAINT logs_pk PRIMARY KEY (id)
+create table task_bots.logs(id serial, botname text, date timestamp DEFAULT now(), action text, result text,task_id int, CONSTRAINT logs_pk PRIMARY KEY (id)
 );
+--alter table task_bots.logs add column ;
 
 
 CREATE OR REPLACE FUNCTION task_manager.check_if_task_for_bot()
@@ -41,5 +42,10 @@ create trigger check_task_for_bot_insert after insert
         tasks for each row
          execute procedure check_if_task_for_bot();
 
-insert into task_bots.bots(name,"path") values ('insert_bot','task_bots.insert_bot');
-insert into task_bots.bots(name,"path") values ('completed','task_bots.completed_bot');
+         
+create table task_bots.shedule(id serial, scheduled_date timestamp, bot_id int, task_id int, params json)
+insert into task_bots.bots(name,"path","type") values ('insert_bot','task_bots.insert_bot',1);
+insert into task_bots.bots(name,"path","type") values ('completed','task_bots.completed_bot',1);
+
+insert into task_bots.bots(name,"path","type") values ('give_task_bot','task_bots.give_task_bot',3);
+
