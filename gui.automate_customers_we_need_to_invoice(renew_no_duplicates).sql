@@ -80,14 +80,31 @@ begin
 						join products on (
 							products.short_name = customer_payments.package
 						) 
-				where 
-					customer_id = _customer_id  
-					and payment_freqency = 'yearly' and products.one_time_or_repetitive = 'repetitive'
-					and service_from <= get_start_date_of_current_financial_year(_customer_id) - interval '1 year' 
-					and service_until >= get_start_date_of_current_financial_year(_customer_id) - interval '1 day'
-					and (get_start_date_of_current_financial_year(114157) + interval '1 year'-interval '1 day')::date <=_no_longer_customer_from;
+				where
+				
+					(_no_longer_customer_from is null and customer_id = _customer_id
+					
+					and  
+						payment_freqency = 'yearly' and products.one_time_or_repetitive = 'repetitive'
+						and service_from <= get_start_date_of_current_financial_year(_customer_id) - interval '1 year' 
+						and (service_until >= get_start_date_of_current_financial_year(_customer_id) - interval '1 day')
+					
 
-	
+					)
+					or 
+
+					(_no_longer_customer_from is not null and customer_id = _customer_id  
+					
+					and  
+						payment_freqency = 'yearly' and products.one_time_or_repetitive = 'repetitive'
+						and service_from <= get_start_date_of_current_financial_year(_customer_id) - interval '1 year' 
+						and (service_until >= get_start_date_of_current_financial_year(_customer_id) - interval '1 day')
+						and (get_start_date_of_current_financial_year(_customer_id) + interval '1 year'-interval '1 day')::date <=_no_longer_customer_from
+
+					);
+					
+
+							
 	insert into customer_payments(customer_id, service_from, service_until,package,receipts_paid_for , price, payment_freqency)
 	SELECT
  		customer_id,
