@@ -5,8 +5,6 @@ CREATE OR REPLACE FUNCTION crm.automate_customers_we_need_to_invoice(
     COST 100.0
     VOLATILE NOT LEAKPROOF 
 AS $function$
-
-
 declare
     _price_for_extra_receipts_previous_year numeric(20,2);
     _extra_receipts numeric(20,2);
@@ -16,6 +14,7 @@ declare
     _service_until date;
     _service_from_previous date;
     _service_until_previous date;
+    _no_longer_customer_from date;
 begin     
 	
     SELECT
@@ -52,7 +51,8 @@ begin
     _service_until = (_service_from + interval '1 year'- interval '1 day');
     
     if (_price_for_extra_receipts_previous_year>0) and 
-    	(not EXISTS (SELECT * FROM customer_payments  WHERE customer_id = _customer_id and  service_from = _service_from_previous and service_until=_service_until_previous and package='Extra receipts')) then
+    	(not EXISTS (SELECT * FROM customer_payments  WHERE customer_id = _customer_id and  service_from = _service_from_previous and service_until=_service_until_previous and package='Extra receipts')) 
+    then
         insert into customer_payments(customer_id, service_from, service_until,package,receipts_paid_for , price,payment_freqency) 
             values (_customer_id , 
                 _service_from_previous,
@@ -63,10 +63,12 @@ begin
 								'yearly'
                );
     end if;
-    
-  
-    CREATE TEMP TABLE temp_customer_payments AS 
-        select customer_id,
+					
+	select customers.no_longer_customer_from into _no_longer_customer_from from customers where id=_customer_id;
+
+	
+	CREATE TEMP TABLE temp_customer_payments AS
+	select customer_id,
 						get_start_date_of_current_financial_year(_customer_id)::date as service_from,
 						(get_start_date_of_current_financial_year(_customer_id) + interval '1 year'-interval '1 day')::date as service_until,
 						package,
@@ -79,10 +81,12 @@ begin
 							products.short_name = customer_payments.package
 						) 
 				where 
-					customer_id = _customer_id 
+					customer_id = _customer_id  
 					and payment_freqency = 'yearly' and products.one_time_or_repetitive = 'repetitive'
 					and service_from <= get_start_date_of_current_financial_year(_customer_id) - interval '1 year' 
-					and service_until >= get_start_date_of_current_financial_year(_customer_id) - interval '1 day';
+					and service_until >= get_start_date_of_current_financial_year(_customer_id) - interval '1 day'
+					and (get_start_date_of_current_financial_year(114157) + interval '1 year'-interval '1 day')::date <=_no_longer_customer_from;
+
 	
 	insert into customer_payments(customer_id, service_from, service_until,package,receipts_paid_for , price, payment_freqency)
 	SELECT
@@ -105,5 +109,6 @@ begin
  		and TEMP_customer_payments.customer_id = _customer_id;
 				
 	drop table temp_customer_payments;
+	
 end;
 $function$;

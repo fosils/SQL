@@ -42,10 +42,11 @@ create trigger check_task_for_bot_insert after insert
         tasks for each row
          execute procedure check_if_task_for_bot();
 
-         
+select * from task_bots.shedule         
 create table task_bots.shedule(id serial, scheduled_date timestamp, bot_id int, task_id int, params json)
 insert into task_bots.bots(name,"path","type") values ('insert_bot','task_bots.insert_bot',1);
 insert into task_bots.bots(name,"path","type") values ('completed','task_bots.completed_bot',1);
 
 insert into task_bots.bots(name,"path","type") values ('give_task_bot','task_bots.give_task_bot',3);
 
+select pg_notify('bot_manager','');
