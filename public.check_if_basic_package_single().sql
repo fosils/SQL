@@ -4,13 +4,11 @@ create or replace function public.check_if_basic_package_single()
 AS $function$
 declare
 	_service_from date;
-	_service_until date;
 	_package text;
 	_current_package_count int;
 	_customer_id int;
-	_date_diff int;
 begin
-	select new.customer_id, new.service_from, new.service_until,new.package into _customer_id,_service_from,_service_until,_package;
+	select new.customer_id, new.service_from, new.package into _customer_id,_service_from,_package;
 	if ((select extra_service from products where short_name=_package)=false) then 
 		select count(package)  into _current_package_count from customer_payments 
  		join products on (products.short_name = package )
