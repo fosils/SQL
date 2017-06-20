@@ -7,15 +7,25 @@ insert into task_manager.freelancers (worker_initials, first_name,email) values 
 select * from task_manager.freelancers
 --insert into task_bots.bots ("name", "type","path",task_type_id)values ('give_task_bot',1,'task_bots.give_task_bot',502)
 set session.username = 'alexey'
+insert into task_manager.tasks (worker_initials,parameters) values ('give_task_bot','{"task_check_period_days": "2", "task_type_id": "7","worker_initials":"alexey" }')
+select currval('tasks_id_seq')
+
 select * from task_bots.logs
 select * from task_bots.bots
-select task_bots.give_task_bot(13530)
+select task_bots.give_task_bot(13580)
 select * from task_bots.logs
+select * from task_bots.schedule
+
+update task_bots.schedule set schedule_datetime = '2017-06-20 14:14:00' where id =2 
+
 --delete from task_bots.logs
 select parameters,parameters->>'worker_initials' from task_manager.tasks where id = 13526;
 select * from task_manager.tasks order by id desc limit 10
 
 --select string_agg(parameter_name,',') from task_manager.task_parameters where task_type_id = (select task_type_id from task_bots.bots where id=(select id from task_bots.bots where name = 'give_task_bot') );
+select current_timestamp
+2017-06-20 13:54:47
+
 
 CREATE OR REPLACE FUNCTION task_bots.give_task_bot(task_id int)
  RETURNS boolean
@@ -47,7 +57,9 @@ declare
 										from_date :=null, 
 										until_date:=(CURRENT_TIMESTAMP + interval '1' day * task_check_period_days)::date);
 		select currval('tasks_id_seq') into created_task_id ;
+		insert into task_bots.schedule (action_parameters, schedule_datetime, task_id ) values(null, (CURRENT_TIMESTAMP + interval '1' day * task_check_period_days)::timestamp , created_task_id);
 		insert into task_bots.logs(botname,"action","result") values (bot_name,'CREATE TASK FOR USER '||worker_initials||' task id ='||cast(created_task_id  as text)||' '||cast(task_check_period_days as text),'success');
+		
 		update task_manager.tasks set task_status='completed' where id = task_id;
 		
 		return true;
@@ -58,6 +70,13 @@ declare
 	end;
 $function$;
 
-select currval('tasks_id_seq')
-
+select CURRENT_TIMESTAMP ,now()
 select * from task_manager.freelancer_roles
+select * from task_bots.schedule where (schedule_datetime <(CURRENT_TIMESTAMP ) ) and completed is null
+select * from task_bots.schedule where (schedule_datetime <(CURRENT_TIMESTAMP ) ) and completed is null
+
+
+
+SELECT now() AT TIME ZONE current_setting('TimeZone');
+SELECT now() AT TIME ZONE 'Europe/Paris';
+SELECT now() AT TIME ZONE 'UTC';
