@@ -22,7 +22,6 @@ begin
 	
 	
 		if (_current_package_count>0 ) then 
-		then
 			RAISE EXCEPTION 'There is already a basic package in this period';
 		end if;
 	end if ;
