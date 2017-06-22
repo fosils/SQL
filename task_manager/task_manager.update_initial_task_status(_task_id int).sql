@@ -1,4 +1,4 @@
-create or replace function task_manager.update_parent_task_status(_task_id int)
+create or replace function task_manager.update_initial_task_status(_task_id int)
 RETURNS text
  LANGUAGE plpgsql
 AS $function$

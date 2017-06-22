@@ -1,9 +1,9 @@
-create or replace function task_manager.get_task_parent(task_id int)
+create or replace function task_manager.get_initial_task(_task_id int)
 RETURNS int
  LANGUAGE plpgsql
 AS $function$
 declare
-	parent_task_id int :=task_id;
+	parent_task_id int :=_task_id;
 	new_parent_task_id int;
     last_parent_task_id int;
 begin
