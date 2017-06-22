@@ -1,4 +1,4 @@
-create or replace function task_manager.get_initial_task(_task_id int)
+create or replace function task_manager.get_initial_task_id(_task_id int)
 RETURNS int
  LANGUAGE plpgsql
 AS $function$
