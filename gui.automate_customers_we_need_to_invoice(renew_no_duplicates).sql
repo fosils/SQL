@@ -123,7 +123,12 @@ begin
  											package)
 	WHERE
  		customer_payments.customer_id IS null
- 		and TEMP_customer_payments.customer_id = _customer_id;
+ 		and TEMP_customer_payments.customer_id = _customer_id
+ 	and
+    NOT EXISTS (
+        SELECT customer_id FROM
+ 		customer_payments where customer_id =_customer_id and service_from = get_start_date_of_current_financial_year(_customer_id)::date
+    );	
 				
 	drop table temp_customer_payments;
 	
