@@ -15,7 +15,7 @@ create table task_bots.logs(id serial, botname text, date timestamp DEFAULT now(
 );
 --alter table task_bots.logs add column ;
 
-
+select * from task_manager.tasks where worker_initials = 'completed'
 CREATE OR REPLACE FUNCTION task_manager.check_if_task_for_bot()
  RETURNS trigger
  LANGUAGE plpgsql
@@ -50,3 +50,4 @@ insert into task_bots.bots(name,"path","type") values ('completed','task_bots.co
 insert into task_bots.bots(name,"path","type") values ('give_task_bot','task_bots.give_task_bot',3);
 
 select pg_notify('bot_manager','');
+notify bot_manager
