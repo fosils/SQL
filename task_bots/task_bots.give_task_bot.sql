@@ -54,11 +54,11 @@ declare
 		task_type_id =_parameters->>'task_type_id';
 		worker_initials =_parameters->>'worker_initials';
 		insert into task_manager.tasks(worker_initials ,
-										until_date,
-										task_type_id) 
-										values (worker_initials::varchar,
-										(CURRENT_TIMESTAMP AT TIME ZONE 'UTC'+ interval '1' day * task_check_period_days)::date,777
-										);
+						until_date,
+						task_type_id) 
+			values (worker_initials::varchar,
+				(CURRENT_TIMESTAMP AT TIME ZONE 'UTC'+ interval '1' day * task_check_period_days)::date,
+				777);
 										
 --		perform task_manager.create_task(the_worker_initials := worker_initials::varchar,
 --										task_description_variables :=null::hstore,

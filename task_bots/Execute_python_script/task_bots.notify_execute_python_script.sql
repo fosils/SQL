@@ -3,7 +3,11 @@ CREATE OR REPLACE FUNCTION task_bots.notify_execute_python_script()
  LANGUAGE plpgsql
 AS $function$
 begin	       	 
-	PERFORM pg_notify('execute_python_script','');
+	
+	if new.schedule_time <= now() then
+		PERFORM pg_notify('execute_python_script','');
+		raise notice  'Notifying %',now(); 
+	end if;
 	return new;
 end;
 $function$;

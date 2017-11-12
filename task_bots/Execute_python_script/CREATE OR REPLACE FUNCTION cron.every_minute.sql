@@ -22,3 +22,6 @@ $function$;
 
 
 
+
+
+select count(*)	from execute_python 
