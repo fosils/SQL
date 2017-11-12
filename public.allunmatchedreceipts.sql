@@ -2,7 +2,6 @@
 
 --select allunmatchedreceipts_with(200371,'01-01-2000'::date,'01-01-2020'::date)
 
-drop function public.allunmatchedreceipts_with(_customer_id integer, _start_date date, _end_date date)
 CREATE OR REPLACE FUNCTION public.allunmatchedreceipts_with(_customer_id integer, _start_date date, _end_date date)
  RETURNS TABLE(customer_id integer, id integer, textlink character varying, to_char text, currency currency_enum, receiptsignedamount_amount_original_currency numeric)
  LANGUAGE plpgsql
