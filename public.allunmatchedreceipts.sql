@@ -1,12 +1,22 @@
+--select allunmatchedreceipts(200060,'01-01-2000','01-01-2020')
+
+--select allunmatchedreceipts_with(200060,'01-01-2000'::date,'01-01-2020'::date)
+
+
 CREATE OR REPLACE FUNCTION public.allunmatchedreceipts_with(_customer_id integer, _start_date date, _end_date date)
  RETURNS TABLE(customer_id integer, id integer, textlink character varying, to_char text, currency currency_enum, receiptsignedamount_amount_original_currency numeric)
  LANGUAGE plpgsql
 AS $function$ 
 begin
 	
-
 RETURN QUERY
-with unperfect_matches as
+with temp as (
+select receipt_id, bank_transaction_id, receipts.customer_id, receiptsignedamount ((expense)::INTEGER, receipts.amount)  receipt_amount, bank_transactions.amount bank_transaction_amount
+from receipts inner join reconciliations on (receipts.id = receipt_id) 
+left join bank_transactions on (bank_transactions.id = bank_transaction_id) where bank_transaction_id <> -1 and (receipts.customer_id = _customer_id or _customer_id is null) and bank_transactions.customer_id = _customer_id
+
+),
+unperfect_matches as
 (
 select receipt_id, bank_transaction_id, receipts.customer_id, receiptsignedamount ((expense)::INTEGER, receipts.amount)  receipt_amount, bank_transactions.amount bank_transaction_amount
 from receipts inner join reconciliations on (receipts.id = receipt_id) 
