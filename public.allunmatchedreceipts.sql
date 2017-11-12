@@ -1,8 +1,4 @@
---select allunmatchedreceipts(200371,'01-01-2000','01-01-2020')
-
---select allunmatchedreceipts_with(200371,'01-01-2000'::date,'01-01-2020'::date)
-
-CREATE OR REPLACE FUNCTION public.allunmatchedreceipts_with(_customer_id integer, _start_date date, _end_date date)
+CREATE OR REPLACE FUNCTION public.allunmatchedreceipts(_customer_id integer, _start_date date, _end_date date)
  RETURNS TABLE(customer_id integer, id integer, textlink character varying, to_char text, currency currency_enum, receiptsignedamount_amount_original_currency numeric)
  LANGUAGE plpgsql
 AS $function$ 
@@ -16,15 +12,15 @@ left join bank_transactions on (bank_transactions.id = bank_transaction_id) wher
 
 ),
 unperfect_matches as
-(
-select * from temp where receipt_id not in (
+(select * from temp where receipt_id not in (
 	select receipt_id from (
 		select receipt_id, max(receipt_amount) as receipt_amount, sum(bank_transaction_amount) as bank_transaction_amount from temp group by receipt_id
 	) as egg where bank_transaction_amount = receipt_amount)
 	and bank_transaction_id not in (
 		select bank_transaction_id from (
 			select bank_transaction_id, max(bank_transaction_amount) as bank_transaction_amount, SUM(receipt_amount) as receipt_amount from temp group by bank_transaction_id 
-		) as egg where bank_transaction_amount = receipt_amount))
+		) as egg where bank_transaction_amount = receipt_amount)
+)
 
 SELECT
     receipts.customer_id,
@@ -143,7 +139,7 @@ WHERE
                                             (C .receipt_id1 = receipts. ID)
                                             OR (C .receipt_id2 = receipts. ID)
                                         )
-                                
+                                )
                             )
                         )
                     )
@@ -160,3 +156,5 @@ ORDER BY
     receipts.entry_date;
 END;
 $function$
+
+--select allunmatchedreceipts(200371,'01-01-2000','01-01-2020')
