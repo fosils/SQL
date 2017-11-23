@@ -1,0 +1,7 @@
+
+#!/bin/sh
+
+pg_dump -Fc detki | bzip2 > /var/lib/pgsql/backup/detki.dmp.bz
+pg_dump -Fc detki_kem | bzip2 > /var/lib/pgsql/backup/detki_kem.dmp.bz
+pg_dump -Fc detki_ugra | bzip2 > /var/lib/pgsql/backup/detki_ugra.dmp.bz
+pg_dump -Fc detki_55 | bzip2 > /var/lib/pgsql/backup/detki_55.dmp.bz
