@@ -36,9 +36,3 @@ create trigger check_if_csv_file_arrived BEFORE INSERT OR UPDATE
         on gyb_emails.attachments
          for each row
          execute procedure check_if_csv_file_arrived();         
-
---insert into gyb_emails.attachments (message_uid, attachment_path ) values ('15fe820a37b155a0', 'c:\auto-printing\attachments\aaa.csv')
-
-         
-         
-         select * from gyb_emails.messages where message_uid = '15fe820a37b155a0'

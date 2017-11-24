@@ -53,11 +53,3 @@ create trigger check_if_big_pdf_file_arrived BEFORE INSERT OR UPDATE
          for each row
          execute procedure check_if_big_pdf_file_arrived();
 
---insert into gyb_emails.attachments (message_uid, attachment_path ,page_count) values ('15fe820a37b155a0', '15fe820a37b155a0_003-1.pdf',13)
-select * from gyb_emails.messages where message_uid = '15fe820a37b155a0'
-select * from gyb_emails.attachments where message_uid= '15fe820a37b155a0'
-
-select count(*)>0  from gyb_emails.email_addresses_to_process where address = 'udgift@revisor1.dk';
-
-
- 
